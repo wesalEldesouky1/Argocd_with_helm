@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-nodejs-deployment
+spec:
+  replicas: {{ .Values.nodejs.replicas }}
+  selector:
+    matchLabels:
+      app: my-nodejs-app
+  template:
+    metadata:
+      labels:
+        app: my-nodejs-app
+    spec:
+      containers:
+        - name: my-nodejs-container
+          image: {{ .Values.nodejs.image.repository }}:{{ .Values.nodejs.image.tag }}
+          ports:
+            - containerPort: 3000
+          env:
+            - name: MONGODB_URI
+              value: "mongodb://{{ .Values.mongodb.username }}:{{ .Values.mongodb.password }}@{{ .Values.mongodb.service.name }}:{{ .Values.mongodb.service.port }}/{{ .Values.mongodb.database }}"
